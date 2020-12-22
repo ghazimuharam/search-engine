@@ -1,0 +1,78 @@
+<!doctype html>
+<html>
+<head>
+  <title>G Search</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="icon" href="https://www.freepnglogos.com/uploads/google-logo-png/google-logo-png-suite-everything-you-need-know-about-google-newest-0.png" type="image/gif" sizes="16x16">
+</head>
+<body class="bg-indigo-100 overflow-y-scroll">
+  <!-- start main-content -->
+  <div id="main-content">
+    <div class="flex flex-col justify-center items-center py-10">
+      <h1 class="text-6xl font-bold pb-5 text-pink-600">G-Search</h1>
+      <div id="search-bar" class="container bg-white rounded-md shadow-2xl sm:w-3/4 lg:w-3/5 my-5 p-3">
+        <div class="flex space-x-5 justify-center items-center">
+          <div class="w-3/5">
+            <input id="query-input" type="text" class="outline-none px-3 p-2 w-full rounded-md shadow-inner bg-gray-200 bg-opacity-50" placeholder="Query">
+          </div>
+          <div class="w-1/5">
+            <input id="totaldocs-input" type="text" class="outline-none px-3 p-2 w-full rounded-md shadow-inner bg-gray-200 bg-opacity-50" placeholder="Total Docs">
+          </div>
+          <div class="w-1/5">
+            <button id="search" onclick="search_query(document.getElementById('query-input').value, document.getElementById('totaldocs-input').value)" class="bg-pink-600 text-white text-xl p-1 w-full rounded-md shadow-2xl focus:outline-none focus:ring focus:border-green-500 font-semibold">Search</button>
+          </div>
+        </div>
+      </div>
+      <div class="container bg-white rounded-xl shadow-xl sm:w-3/4 lg:w-3/5 my-5 p-5">
+        <div id="hasil"></div>
+        <div id="card-hasil" class="flex flex-col">
+        
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- end main-content -->
+
+  <script>
+    var hasil = document.getElementById('hasil');
+
+    function cardBuilder(url, title, text) {
+      return `<div class="flex flex-col py-5">
+                <a href="${url}" target="_blank" class="text-blue-500 font-semibold text-lg capitalize">${title}</a>
+                <small class="text-sm text-pink-500 font-semibold">${url}</small>
+                <p class="text-sm text-gray-700">${text}</p>
+              </div>`;
+    }
+
+    function search_query(query, total_docs) {
+      if(!total_docs){
+        total_docs = 10
+      }
+      fetch('api/search/'+query+'/'+total_docs)
+      .then(response => response.json())
+      .then(data => {
+        hasil.innerHTML = `<p class="text-sm text-gray-600">terdapat ${Object.keys(data).length - 1} hasil dalam ${data[0].process_time} detik</p>`;
+        if (data.length > 1){
+          for (let index = 1; index < data.length; index++) {
+            const element = data[index];
+            document.getElementById('card-hasil').innerHTML += cardBuilder(element.url, element.title, element.text)
+          }
+        }
+      });
+    }
+
+    [document.getElementById("query-input"), document.getElementById("totaldocs-input")].forEach(item => {
+      item.addEventListener("keyup", function(event) {
+      // Number 13 is the "Enter" key on the keyboard
+        if (event.keyCode === 13) {
+          document.getElementById('card-hasil').innerHTML = '';
+          document.getElementById("search").click();
+        }
+      })
+    });
+  </script>
+  
+</body>
+</html>
