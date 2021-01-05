@@ -21,13 +21,13 @@
             <input id="totaldocs-input" type="text" class="outline-none px-3 p-2 w-full rounded-md shadow-inner bg-gray-200 bg-opacity-50" placeholder="Total Docs">
           </div>
           <div class="w-1/5">
-            <button id="search" onclick="search_query(document.getElementById('query-input').value, document.getElementById('totaldocs-input').value)" class="bg-pink-600 text-white text-xl p-1 w-full rounded-md shadow-2xl focus:outline-none focus:ring focus:border-green-500 font-semibold">Search</button>
+            <button id="search" onclick="search_query(document.getElementById('query-input').value, document.getElementById('totaldocs-input').value)" class="bg-pink-600 text-white text-md sm:text-xl p-1 w-full rounded-md shadow-2xl focus:outline-none focus:ring focus:border-green-500 font-semibold">Search</button>
           </div>
         </div>
       </div>
       <div class="container bg-white rounded-xl shadow-xl sm:w-3/4 lg:w-3/5 my-5 p-5">
         <div id="hasil"></div>
-        <div id="card-hasil" class="flex flex-col">
+        <div id="card-hasil" class="flex flex-col overflow-x-hidden">
         
         </div>
       </div>
@@ -47,6 +47,7 @@
     }
 
     function search_query(query, total_docs) {
+      document.getElementById('card-hasil').innerHTML = '';
       if(!total_docs){
         total_docs = 10
       }
